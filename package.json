@@ -9,5 +9,10 @@
 	},
 	"devDependencies": {
 		"wrangler": "^4.28.0"
+	},
+	"dependencies": {
+		"discord-interactions": "^4.3.0",
+		"dotenv": "^17.2.1",
+		"itty-router": "^5.0.21"
 	}
 }

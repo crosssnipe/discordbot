@@ -1,8 +1,13 @@
 name = "crosssnipes"
-main = "src/worker.js"
+main = "src/server.js"
 workers_dev = true
 compatibility_date = "2025-08-06"
 
 [observability]
 enabled = true
 head_sampling_rate = 1
+
+# [secrets]
+# DISCORD_TOKEN
+# DISCORD_PUBLIC_KEY
+# DISCORD_APPLICATION_ID
