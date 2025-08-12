@@ -3,6 +3,7 @@
  */
 
 import { AutoRouter } from 'itty-router';
+import { log_snipe } from './snipe_manager.js';
 import {
   InteractionResponseType,
   InteractionType,
@@ -56,11 +57,25 @@ router.post('/', async (request, env) => {
     });
   }
 
+
+
+
+
+
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
     // Most user commands will come as `APPLICATION_COMMAND`.
     switch (interaction.data.name.toLowerCase()) {
+
+      // Snipe command
       case SNIPE_COMMAND.name.toLowerCase(): {
+        const sniper_data = interaction.member?.user;
+        const targets_data = interaction.data.resolved?.users;
+        log_snipe(sniper_data, targets_data);
+
+    
         const cuteUrl = "sniped lol";
+
+
         return new JsonResponse({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -68,10 +83,12 @@ router.post('/', async (request, env) => {
           },
         });
       }
+
+      // Ping command
       case PING_COMMAND.name.toLowerCase(): {
         const applicationId = env.DISCORD_APPLICATION_ID;
         //const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${applicationId}&scope=applications.commands`;
-        const PING_RESPONSE = `Pong! 🏓`;
+        const PING_RESPONSE = `PonGGGg! 🏓`;
         return new JsonResponse({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -80,6 +97,9 @@ router.post('/', async (request, env) => {
           },
         });
       }
+
+
+
       default:
         return new JsonResponse({ error: 'Unknown Type' }, { status: 400 });
     }

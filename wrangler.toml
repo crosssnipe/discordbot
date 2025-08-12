@@ -11,3 +11,8 @@ head_sampling_rate = 1
 # DISCORD_TOKEN
 # DISCORD_PUBLIC_KEY
 # DISCORD_APPLICATION_ID
+
+
+[[kv_namespaces]]
+binding = "SNIPE_DATA"
+id = "609a40ac54f347dabcbbc9b16adc183d"
