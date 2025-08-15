@@ -9,10 +9,17 @@ import {
   verifyKey,
 } from 'discord-interactions';
 import { SNIPE_COMMAND, PING_COMMAND } from './commands.js';
+import { handleSnipe } from './handlers/snipe.js';
+import { handlePing } from './handlers/ping.js';
 // import { getCuteUrl } from './reddit.js';
 import { InteractionResponseFlags } from 'discord-interactions';
 
-class JsonResponse extends Response {
+const handlers = {
+    SNIPE: handleSnipe,
+    PING: handlePing,
+};
+
+export class JsonResponse extends Response {
   constructor(body, init) {
     const jsonBody = JSON.stringify(body);
     init = init || {
@@ -58,6 +65,18 @@ router.post('/', async (request, env) => {
 
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
     // Most user commands will come as `APPLICATION_COMMAND`.
+
+    if (handlers[interaction.data.name.toUpperCase()]) {
+      console.log(`Handling command: ${interaction.data.name}`);
+      return handlers[interaction.data.name.toUpperCase()](interaction, env); // Call the handler for the command
+    } else {
+      console.error(`Unknown command: ${interaction.data.name}`);
+      return new JsonResponse(
+        { error: 'Unknown command' },
+        { status: 400 },
+      );
+    }
+
     switch (interaction.data.name.toLowerCase()) {
       case SNIPE_COMMAND.name.toLowerCase(): {
         const cuteUrl = "sniped lol";
