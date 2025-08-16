@@ -58,10 +58,6 @@ router.post('/', async (request, env) => {
   }
 
 
-
-
-
-
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
     // Most user commands will come as `APPLICATION_COMMAND`.
     switch (interaction.data.name.toLowerCase()) {
@@ -70,7 +66,8 @@ router.post('/', async (request, env) => {
       case SNIPE_COMMAND.name.toLowerCase(): {
         const sniper_data = interaction.member?.user;
         const targets_data = interaction.data.resolved?.users;
-        log_snipe(sniper_data, targets_data);
+        log_snipe(sniper_data, targets_data, env);
+      
 
     
         const cuteUrl = "sniped lol";
@@ -80,6 +77,7 @@ router.post('/', async (request, env) => {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             content: cuteUrl,
+            flags: InteractionResponseFlags.EPHEMERAL,
           },
         });
       }
@@ -97,8 +95,6 @@ router.post('/', async (request, env) => {
           },
         });
       }
-
-
 
       default:
         return new JsonResponse({ error: 'Unknown Type' }, { status: 400 });

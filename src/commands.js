@@ -12,7 +12,7 @@ export const SNIPE_COMMAND = {
             name: 'target2',
             description: 'The target to snipe.',
             type: 6, // USER type
-            required: true,
+            required: false,
         },
     ],
 };
