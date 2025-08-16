@@ -1,3 +1,6 @@
+import { PointManager } from './point_manager.js';
+import { MsgManager } from './msg_manager.js';
+
 export class SnipeManager {
     constructor(env) {
         this.env = env;
@@ -63,63 +66,5 @@ export class SnipeManager {
     }
 }
 
-class PointManager {
-    get_combo_bonus(targets) {
-        let vals = {1: 1, 2: 1.3, 3:1.4, 4: 1.45, 5: 1.5}
-        return vals[Object.keys(targets).length] || 1;
-    }
 
 
-    async get_raw_user_value(target, env){
-        const target_id = target?.id;
-        const FLOOR_VALUE = 10;
-
-        // Check if Target ID exists in SNIPE_DATA
-        const exist = await env.SNIPE_DATA.get(target_id);
-    
-        if (!exist) {
-            await env.SNIPE_DATA.put(target_id, JSON.stringify({"out": 0, "in": 0, "pts": 0, "username": target?.username}));
-        }
-
-        const out_count = JSON.parse(await env.SNIPE_DATA.get(target_id))["out"];
-        const in_count = JSON.parse(await env.SNIPE_DATA.get(target_id))["in"];
-        const raw_value = (Math.log(out_count + 2) / Math.log(in_count + 2))*20;
-
-        return Math.max(raw_value, FLOOR_VALUE);
-
-    }
-
-    async add_points(sniper_id, pts, env) {
-        const sniper = await env.SNIPE_DATA.get(sniper_id);
-        const temp = JSON.parse(sniper);
-        temp.pts += pts;
-        await env.SNIPE_DATA.put(sniper_id, JSON.stringify(temp));
-    }
-}
-
-export class MsgManager {
-    constructor() {
-        this.pointManager = new PointManager();
-    }
-
-    get_target_msg(targets) {
-        const target_mentions = Object.values(targets).map(user => `<@${user.id}>`);
-        if (target_mentions.length == 1){
-            return `:gun: Sniped ${target_mentions[0]}!`;
-        }
-        else {
-            let msg = `:gun: Wow! Sniped ${this.format_user_mentions(target_mentions)}! **${this.pointManager.get_combo_bonus(targets)}x combo bonus** applied :fire:`;
-            return msg;
-        }
-    }
-
-    format_user_mentions(target_mentions) {
-        let ret_msg = '';
-
-        for (let i = 0; i < target_mentions.length - 1; i++){
-            ret_msg += `${target_mentions[i]}, `;
-        }
-        ret_msg += `and ${target_mentions[target_mentions.length - 1]}`;
-        return ret_msg;
-    }
-}

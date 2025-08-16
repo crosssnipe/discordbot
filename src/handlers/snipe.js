@@ -1,6 +1,7 @@
 import { JsonResponse } from '../server.js';
 import { InteractionResponseType, InteractionResponseFlags } from 'discord-interactions';
-import { SnipeManager, MsgManager } from '../snipe_manager.js';
+import { SnipeManager } from '../managers/snipe_manager.js';
+import { MsgManager } from '../managers/msg_manager.js';
 
 
 export async function handleSnipe(interaction, env) {
