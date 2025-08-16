@@ -3,7 +3,6 @@
  */
 
 import { AutoRouter } from 'itty-router';
-import { log_snipe } from './snipe_manager.js';
 import {
   InteractionResponseType,
   InteractionType,
@@ -71,7 +70,8 @@ router.post('/', async (request, env) => {
     if (handlers[interaction.data.name.toUpperCase()]) {
       console.log(`Handling command: ${interaction.data.name}`);
       return handlers[interaction.data.name.toUpperCase()](interaction, env); // Call the handler for the command
-    } else {
+    } 
+    else {
       console.error(`Unknown command: ${interaction.data.name}`);
       return new JsonResponse(
         { error: 'Unknown command' },
@@ -79,45 +79,45 @@ router.post('/', async (request, env) => {
       );
     }
 
-    switch (interaction.data.name.toLowerCase()) {
+  //   switch (interaction.data.name.toLowerCase()) {
 
-      // Snipe command
-      case SNIPE_COMMAND.name.toLowerCase(): {
-        const sniper_data = interaction.member?.user;
-        const targets_data = interaction.data.resolved?.users;
-        log_snipe(sniper_data, targets_data, env);
+  //     // Snipe command
+  //     case SNIPE_COMMAND.name.toLowerCase(): {
+  //       const sniper_data = interaction.member?.user;
+  //       const targets_data = interaction.data.resolved?.users;
+  //       log_snipe(sniper_data, targets_data, env);
       
 
     
-        const cuteUrl = "sniped lol";
+  //       const cuteUrl = "sniped lol";
 
 
-        return new JsonResponse({
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            content: cuteUrl,
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
-        });
-      }
+  //       return new JsonResponse({
+  //         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+  //         data: {
+  //           content: cuteUrl,
+  //           flags: InteractionResponseFlags.EPHEMERAL,
+  //         },
+  //       });
+  //     }
 
-      // Ping command
-      case PING_COMMAND.name.toLowerCase(): {
-        const applicationId = env.DISCORD_APPLICATION_ID;
-        //const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${applicationId}&scope=applications.commands`;
-        const PING_RESPONSE = `PonGGGg! 🏓`;
-        return new JsonResponse({
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            content: PING_RESPONSE,
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
-        });
-      }
+  //     // Ping command
+  //     case PING_COMMAND.name.toLowerCase(): {
+  //       const applicationId = env.DISCORD_APPLICATION_ID;
+  //       //const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${applicationId}&scope=applications.commands`;
+  //       const PING_RESPONSE = `PonGGGg! 🏓`;
+  //       return new JsonResponse({
+  //         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+  //         data: {
+  //           content: PING_RESPONSE,
+  //           flags: InteractionResponseFlags.EPHEMERAL,
+  //         },
+  //       });
+  //     }
 
-      default:
-        return new JsonResponse({ error: 'Unknown Type' }, { status: 400 });
-    }
+  //     default:
+  //       return new JsonResponse({ error: 'Unknown Type' }, { status: 400 });
+  //   }
   }
 
   console.error('Unknown Type');
