@@ -68,39 +68,13 @@ router.post('/', async (request, env) => {
 
     if (handlers[interaction.data.name.toUpperCase()]) {
       console.log(`Handling command: ${interaction.data.name}`);
+      
       return handlers[interaction.data.name.toUpperCase()](interaction, env); // Call the handler for the command
-    } else {
-      console.error(`Unknown command: ${interaction.data.name}`);
-      return new JsonResponse(
-        { error: 'Unknown command' },
-        { status: 400 },
-      );
-    }
 
-    switch (interaction.data.name.toLowerCase()) {
-      case SNIPE_COMMAND.name.toLowerCase(): {
-        const cuteUrl = "sniped lol";
-        return new JsonResponse({
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            content: cuteUrl,
-          },
-        });
-      }
-      case PING_COMMAND.name.toLowerCase(): {
-        const applicationId = env.DISCORD_APPLICATION_ID;
-        //const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${applicationId}&scope=applications.commands`;
-        const PING_RESPONSE = `Pong! 🏓`;
-        return new JsonResponse({
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            content: PING_RESPONSE,
-            flags: InteractionResponseFlags.EPHEMERAL,
-          },
-        });
-      }
-      default:
-        return new JsonResponse({ error: 'Unknown Type' }, { status: 400 });
+    } else {
+
+      console.error(`Unknown command: ${interaction.data.name}`);
+      return new JsonResponse({ error: 'Unknown command' }, { status: 400 });
     }
   }
 
