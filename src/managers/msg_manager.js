@@ -20,7 +20,7 @@ export class MsgManager {
         let ret_msg = '';
 
         for (let i = 0; i < target_mentions.length - 1; i++){
-            ret_msg += `${target_mentions[i]}, `;
+            ret_msg += `${target_mentions[i]} `;
         }
         ret_msg += `and ${target_mentions[target_mentions.length - 1]}`;
         return ret_msg;

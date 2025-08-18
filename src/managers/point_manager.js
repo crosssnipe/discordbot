@@ -5,29 +5,28 @@ export class PointManager {
     }
 
 
-    async get_raw_user_value(target, env){
-        const target_id = target?.id;
+    async get_raw_user_value(target_data){
+        if (!target_data) {
+            console.error("Target data is undefined");
+            return 0;
+        }
         const FLOOR_VALUE = 10;
 
-        // Check if Target ID exists in SNIPE_DATA
-        const exist = await env.SNIPE_DATA.get(target_id);
-    
-        if (!exist) {
-            await env.SNIPE_DATA.put(target_id, JSON.stringify({"out": 0, "in": 0, "pts": 0, "username": target?.username}));
-        }
-
-        const out_count = JSON.parse(await env.SNIPE_DATA.get(target_id))["out"];
-        const in_count = JSON.parse(await env.SNIPE_DATA.get(target_id))["in"];
+        const out_count = target_data["out"];
+        const in_count = target_data["in"];
         const raw_value = (Math.log(out_count + 2) / Math.log(in_count + 2))*20;
 
         return Math.max(raw_value, FLOOR_VALUE);
 
     }
 
-    async add_points(sniper_id, pts, env) {
-        const sniper = await env.SNIPE_DATA.get(sniper_id);
-        const temp = JSON.parse(sniper);
-        temp.pts += pts;
-        await env.SNIPE_DATA.put(sniper_id, JSON.stringify(temp));
+    async add_points(sniper_data, pts) {
+        if (!sniper_data) {
+            console.error("Sniper data is undefined");
+            return;
+        }
+
+        sniper_data["pts"] += pts;
+        return sniper_data["pts"];
     }
 }

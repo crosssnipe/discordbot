@@ -8,61 +8,81 @@ export class SnipeManager {
     }
 
     async log_snipe(sniper, targets) {
-        // console.log(sniper);
-        // console.log(targets);
-        const sniper_id = sniper?.id;
-
+        // RETURNS JSON WITH POINTS EARNED IN THIS SNIPE AND USER TOTAL POINTS
+        // we're going to save the data at the end of this function... 
+        // curr change: no function will save data except save_user_data
+        // every function will expect to be passed in a json object
+        if (!sniper || !targets) {
+            console.error("Sniper or targets data is undefined");
+            return 0;
+        }
+        let sniper_data = await this.get_user_data(sniper);
         // set bonus points based on number of targets
         const combo_bonus = this.pointManager.get_combo_bonus(targets);
     
         let total_points = 0;
         let szn_targets = [];
         for (const target of Object.values(targets)) {
-            const target_id = target.id;
-            let value = await this.pointManager.get_raw_user_value(target, this.env)
+
+            let target_data = await this.get_user_data(target);
+            let value = await this.pointManager.get_raw_user_value(target_data)
             
             let multiplier = 1;
 
             value = Math.ceil(value * multiplier * combo_bonus);
-            await this.increment_out(sniper);
-            await this.increment_in(target);
-            await this.pointManager.add_points(sniper_id, value, this.env);
+            await this.increment_out(sniper_data);
+            await this.increment_in(target_data);
+            await this.pointManager.add_points(sniper_data, value);
 
             total_points += value;
-    
+            this.save_user_data(target, target_data);
+            console.log('Target data saved:', target_data);
         }
-
-        return total_points;
+        this.save_user_data(sniper, sniper_data);
+        return {pts_earned: total_points, total_pts: sniper_data["pts"]};
     }
 
-    async increment_out(sniper) {
-        const sniper_id = sniper?.id;
-        const exist = await this.env.SNIPE_DATA.get(sniper_id);
-        if (!exist) {
-            await this.env.SNIPE_DATA.put(sniper_id, JSON.stringify({"out": 1, "in": 0, "pts": 0, "username": sniper?.username}));
-        } else {
-            const temp = JSON.parse(exist);
-            temp.out += 1;
-            await this.env.SNIPE_DATA.put(sniper_id, JSON.stringify(temp));
+    async increment_out(sniper_data) {
+        if (!sniper_data) {
+            console.error("Sniper data is undefined");
+            return;
         }
+        sniper_data["out"] += 1;
     }
 
-    async increment_in(target) {
-        const target_id = target?.id;
-        const exist = await this.env.SNIPE_DATA.get(target_id);
-        if (!exist) {
-            await this.env.SNIPE_DATA.put(target_id, JSON.stringify({"out": 0, "in": 1, "pts": 0, "username": target?.username}));
-        } else {
-            const temp = JSON.parse(exist);
-            temp.in += 1;
-            await this.env.SNIPE_DATA.put(target_id, JSON.stringify(temp));
+    async increment_in(target_data) {
+        if (!target_data) {
+            console.error("Target data is undefined");
+            return;
         }
+        target_data["in"] += 1;
+
     }
 
-    async user_data(user) {
+    async get_user_data(user) { // this will always return a json object
         const user_id = user?.id;
-        const user_data = await this.env.SNIPE_DATA.get(user_id);
+        if (!user_id) {
+            console.error("User ID is undefined");
+            return null;
+        }
+        const user_data = await this.env.SNIPES_DATA.get(user_id);
+
+        if (!user_data) {
+            return {
+                out: 0,
+                in: 0,
+                pts: 0,
+                username: user?.username || 'Unknown User',
+                opted_in: true
+            };
+        }
+
         return JSON.parse(user_data);
+    }
+
+    async save_user_data(user, json_data) {
+        const user_id = user?.id;
+        await this.env.SNIPES_DATA.put(user_id, JSON.stringify(json_data));
     }
 }
 
