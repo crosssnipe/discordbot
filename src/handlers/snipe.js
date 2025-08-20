@@ -4,6 +4,7 @@ import { SnipeManager } from '../managers/snipe_manager.js';
 import { MsgManager } from '../managers/msg_manager.js';
 
 
+
 export async function handleSnipe(interaction, env) {
     const snipeManager = new SnipeManager(env);
     const msgManager = new MsgManager();

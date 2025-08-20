@@ -1,4 +1,4 @@
-import { SNIPE_COMMAND, PING_COMMAND  } from './commands.js';
+import { SNIPE_COMMAND, PING_COMMAND, STATS_COMMAND  } from './commands.js';
 import dotenv from 'dotenv';
 import process from 'node:process';
 
@@ -12,6 +12,9 @@ dotenv.config({ path: '.dev.vars' });
 
 const token = process.env.DISCORD_TOKEN;
 const applicationId = process.env.DISCORD_APPLICATION_ID;
+
+// Put all commands in an array to register them all at once.
+const commandList = [SNIPE_COMMAND, PING_COMMAND, STATS_COMMAND];
 
 if (!token) {
   throw new Error('The DISCORD_TOKEN environment variable is required.');
@@ -34,7 +37,7 @@ const response = await fetch(url, {
     Authorization: `Bot ${token}`,
   },
   method: 'PUT',
-  body: JSON.stringify([SNIPE_COMMAND, PING_COMMAND]),
+  body: JSON.stringify(commandList),
 });
 
 if (response.ok) {

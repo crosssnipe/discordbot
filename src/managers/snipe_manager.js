@@ -19,14 +19,14 @@ export class SnipeManager {
         let sniper_data = await this.get_user_data(sniper);
         // set bonus points based on number of targets
         const combo_bonus = this.pointManager.get_combo_bonus(targets);
-    
+
         let total_points = 0;
         let szn_targets = [];
         for (const target of Object.values(targets)) {
 
             let target_data = await this.get_user_data(target);
             let value = await this.pointManager.get_raw_user_value(target_data)
-            
+
             let multiplier = 1;
 
             value = Math.ceil(value * multiplier * combo_bonus);
@@ -38,8 +38,8 @@ export class SnipeManager {
             this.save_user_data(target, target_data);
             console.log('Target data saved:', target_data);
         }
-        this.save_user_data(sniper, sniper_data);
-        return {pts_earned: total_points, total_pts: sniper_data["pts"]};
+        this.save_user_data(sniper, sniper_data, this.env);
+        return { pts_earned: total_points, total_pts: sniper_data["pts"] };
     }
 
     async increment_out(sniper_data) {
@@ -59,6 +59,7 @@ export class SnipeManager {
 
     }
 
+
     async get_user_data(user) { // this will always return a json object
         const user_id = user?.id;
         if (!user_id) {
@@ -66,8 +67,8 @@ export class SnipeManager {
             return null;
         }
         const user_data = await this.env.SNIPES_DATA.get(user_id);
-
         if (!user_data) {
+            console.log("No user data found for ID, returning default values", user_id);
             return {
                 out: 0,
                 in: 0,
