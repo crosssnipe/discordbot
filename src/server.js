@@ -11,11 +11,13 @@ import {
 import { handleSnipe } from './handlers/snipe.js';
 import { handlePing } from './handlers/ping.js';
 import { handleStats } from './handlers/stats.js';
+import { handleLeaderBoard } from './handlers/leaderboard.js';
 
 const handlers = {
     SNIPE: handleSnipe,
     PING: handlePing,
     STATS: handleStats,
+    LEADERBOARD: handleLeaderBoard,
 };
 
 export class JsonResponse extends Response {

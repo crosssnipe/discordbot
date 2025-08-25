@@ -25,4 +25,6 @@ export class MsgManager {
         ret_msg += `and ${target_mentions[target_mentions.length - 1]}`;
         return ret_msg;
     }
+
+    
 }

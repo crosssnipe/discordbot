@@ -53,3 +53,9 @@ export const PING_COMMAND = {
     description: 'Ping the bot to check if it is online.',
     options: [],
 };
+
+export const LEADERBOARD_COMMAND = {
+    name: 'leaderboard',
+    description: "View Leaderboard. ",
+    options: [],
+};

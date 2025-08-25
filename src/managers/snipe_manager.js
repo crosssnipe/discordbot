@@ -1,11 +1,14 @@
 import { PointManager } from './point_manager.js';
 import { MsgManager } from './msg_manager.js';
+import { LeaderBoardManager } from './leaderboard_manager.js';
 
 export class SnipeManager {
     constructor(env) {
         this.env = env;
         this.pointManager = new PointManager();
+        this.leaderBoardManager = new LeaderBoardManager(env);
     }
+
 
     async log_snipe(sniper, targets) {
         // RETURNS JSON WITH POINTS EARNED IN THIS SNIPE AND USER TOTAL POINTS
@@ -16,9 +19,11 @@ export class SnipeManager {
             console.error("Sniper or targets data is undefined");
             return 0;
         }
+       
         let sniper_data = await this.get_user_data(sniper);
         // set bonus points based on number of targets
         const combo_bonus = this.pointManager.get_combo_bonus(targets);
+        
 
         let total_points = 0;
         let szn_targets = [];
@@ -39,8 +44,10 @@ export class SnipeManager {
             console.log('Target data saved:', target_data);
         }
         this.save_user_data(sniper, sniper_data, this.env);
+        await this.leaderBoardManager.update_leaderboard(sniper_data);
         return { pts_earned: total_points, total_pts: sniper_data["pts"] };
     }
+
 
     async increment_out(sniper_data) {
         if (!sniper_data) {
@@ -49,6 +56,7 @@ export class SnipeManager {
         }
         sniper_data["out"] += 1;
     }
+
 
     async increment_in(target_data) {
         if (!target_data) {
@@ -61,12 +69,14 @@ export class SnipeManager {
 
 
     async get_user_data(user) { // this will always return a json object
+        
         const user_id = user?.id;
         if (!user_id) {
             console.error("User ID is undefined");
             return null;
         }
-        const user_data = await this.env.SNIPES_DATA.get(user_id);
+
+        const user_data = await this.env.SNIPE_DATA.get(user_id);
         if (!user_data) {
             console.log("No user data found for ID, returning default values", user_id);
             return {
@@ -81,9 +91,10 @@ export class SnipeManager {
         return JSON.parse(user_data);
     }
 
+
     async save_user_data(user, json_data) {
         const user_id = user?.id;
-        await this.env.SNIPES_DATA.put(user_id, JSON.stringify(json_data));
+        await this.env.SNIPE_DATA.put(user_id, JSON.stringify(json_data));
     }
 }
 
