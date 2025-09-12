@@ -1,3 +1,6 @@
+import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+import { JsonResponse } from '../server';
+
 export async function get_user_data(user, env) { // this will always return a json object
     const user_id = user?.id;
     if (!user_id) {
@@ -22,4 +25,23 @@ export async function get_user_data(user, env) { // this will always return a js
 export async function save_user_data(user, json_data, env) {
     const user_id = user?.id;
     await env.SNIPE_DATA.put(user_id, JSON.stringify(json_data));
+}
+
+export async function opted_in(user_data) {
+    return user_data?.opted_in !== false; // Default to true if not set
+}
+
+export async function get_json_response(content, ephemeral = false) {
+    return new JsonResponse({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+            content: content,
+            flags: ephemeral ? InteractionResponseFlags.EPHEMERAL : 0, // EPHEMERAL flag
+        },
+    });
+}
+
+export async function is_moderator(interaction) {
+    const MOD_ID = 1402765841237413938;
+    return interaction.member?.roles?.includes(MOD_ID);
 }

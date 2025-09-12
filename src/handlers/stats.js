@@ -1,6 +1,4 @@
 import * as utils from '../managers/common.js';
-import { JsonResponse } from '../server.js';
-import { InteractionResponseType, InteractionResponseFlags } from 'discord-interactions';
 
 export async function handleStats(interaction, env) {
 
@@ -9,13 +7,12 @@ export async function handleStats(interaction, env) {
     let user_data = await utils.get_user_data(target, env);
 
     if (!user_data) {
-        return new JsonResponse({
-            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-                content: `No data found for user <@${target.id}>.`,
-                flags: InteractionResponseFlags.EPHEMERAL, // Make the response visible only to the user
-            },
-        });
+        return utils.get_json_response(`No data found for user <@${target.id}>.`, true);
+    }
+
+    if (!await utils.opted_in(user_data)) {
+        let STATS_RESPONSE = `User <@${target.id}> has not opted in to CrossSnipes.`;
+        return utils.get_json_response(STATS_RESPONSE, true);
     }
 
     const outCount = user_data.out || 0;
@@ -29,11 +26,5 @@ export async function handleStats(interaction, env) {
 :gun: Snipes: **${outCount}**
 :moneybag: Points: **${totalPoints}**`;
 
-    return new JsonResponse({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-            content: STATS_RESPONSE,
-            flags: InteractionResponseFlags.EPHEMERAL, // Make the response visible only to the user
-        },
-    });
+    return utils.get_json_response(STATS_RESPONSE, true);
 }

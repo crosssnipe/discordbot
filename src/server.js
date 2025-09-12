@@ -12,12 +12,16 @@ import { handleSnipe } from './handlers/snipe.js';
 import { handlePing } from './handlers/ping.js';
 import { handleStats } from './handlers/stats.js';
 import { handleLeaderBoard } from './handlers/leaderboard.js';
+import { handleOptOut } from './handlers/optout.js';
+import { handleOpt } from './handlers/opt.js';
 
 const handlers = {
     SNIPE: handleSnipe,
     PING: handlePing,
     STATS: handleStats,
     LEADERBOARD: handleLeaderBoard,
+    OPTOUT: handleOptOut,
+    OPT: handleOpt,
 };
 
 export class JsonResponse extends Response {
@@ -73,7 +77,7 @@ router.post('/', async (request, env) => {
       return handlers[interaction.data.name.toUpperCase()](interaction, env); // Call the handler for the command
     } 
     else {
-      console.error('Unknown command: ${interaction.data.name}');
+      console.error(`Unknown command: ${interaction.data.name}`);
       return new JsonResponse(
         { error: 'Unknown command' },
         { status: 400 },

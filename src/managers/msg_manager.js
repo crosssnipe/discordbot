@@ -6,7 +6,7 @@ export class MsgManager {
     }
 
     get_target_msg(targets) {
-        const target_mentions = Object.values(targets).map(user => `<@${user.id}>`);
+        const target_mentions = Array.from(targets.keys()).map(user => `<@${user}>`);
         if (target_mentions.length == 1){
             return `:gun: Sniped ${target_mentions[0]}!`;
         }

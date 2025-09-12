@@ -10,40 +10,37 @@ export class SnipeManager {
     }
 
 
-    async log_snipe(sniper, targets) {
+    async log_snipe(sniper_id, sniper_data, target_data) {
         // RETURNS JSON WITH POINTS EARNED IN THIS SNIPE AND USER TOTAL POINTS
         // we're going to save the data at the end of this function... 
         // curr change: no function will save data except save_user_data
         // every function will expect to be passed in a json object
-        if (!sniper || !targets) {
-            console.error("Sniper or targets data is undefined");
+        if (!sniper_data || !target_data) {
+            console.error("Snipe or target data is undefined");
             return 0;
         }
-       
-        let sniper_data = await this.get_user_data(sniper);
-        // set bonus points based on number of targets
-        const combo_bonus = this.pointManager.get_combo_bonus(targets);
+               // set bonus points based on number of targets
+        const combo_bonus = this.pointManager.get_combo_bonus(target_data);
         
-
         let total_points = 0;
-        let szn_targets = [];
-        for (const target of Object.values(targets)) {
+        let szn_targets = []; // todo: implement season targets
+        for (const [id, data] of target_data.entries()) {
 
-            let target_data = await this.get_user_data(target);
-            let value = await this.pointManager.get_raw_user_value(target_data)
+            let value = await this.pointManager.get_raw_user_value(data)
 
             let multiplier = 1;
 
             value = Math.ceil(value * multiplier * combo_bonus);
             await this.increment_out(sniper_data);
-            await this.increment_in(target_data);
+            await this.increment_in(data);
             await this.pointManager.add_points(sniper_data, value);
 
             total_points += value;
-            this.save_user_data(target, target_data);
-            console.log('Target data saved:', target_data);
+            this.save_user_data(id, data);
         }
-        this.save_user_data(sniper, sniper_data, this.env);
+
+
+        this.save_user_data(sniper_id, sniper_data);
         await this.leaderBoardManager.update_leaderboard(sniper_data);
         return { pts_earned: total_points, total_pts: sniper_data["pts"] };
     }
@@ -78,7 +75,7 @@ export class SnipeManager {
 
         const user_data = await this.env.SNIPE_DATA.get(user_id);
         if (!user_data) {
-            console.log("No user data found for ID, returning default values", user_id);
+            console.log(`No user data found for ID ${user_id}, returning default values`);
             return {
                 out: 0,
                 in: 0,
@@ -92,8 +89,7 @@ export class SnipeManager {
     }
 
 
-    async save_user_data(user, json_data) {
-        const user_id = user?.id;
+    async save_user_data(user_id, json_data) {
         await this.env.SNIPE_DATA.put(user_id, JSON.stringify(json_data));
     }
 }

@@ -5,7 +5,6 @@ export class LeaderBoardManager{
 
     async get_leaderboard(){
         // Returns a leaderboard of the top 10 snipers 
-
         const leaderboard_data = await this.env.SNIPE_DATA.get("leaderboard");
         if (!leaderboard_data) {
             console.log("No Leaderboard data found");
