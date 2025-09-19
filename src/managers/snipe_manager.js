@@ -41,7 +41,7 @@ export class SnipeManager {
 
 
         this.save_user_data(sniper_id, sniper_data);
-        await this.leaderBoardManager.update_leaderboard(sniper_data);
+        await this.leaderBoardManager.update_leaderboard(sniper_id, sniper_data);
         return { pts_earned: total_points, total_pts: sniper_data["pts"] };
     }
 

@@ -40,8 +40,3 @@ export async function get_json_response(content, ephemeral = false) {
         },
     });
 }
-
-export async function is_moderator(interaction) {
-    const MOD_ID = 1402765841237413938;
-    return interaction.member?.roles?.includes(MOD_ID);
-}

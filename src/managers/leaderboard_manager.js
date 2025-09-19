@@ -14,18 +14,16 @@ export class LeaderBoardManager{
         return JSON.parse(leaderboard_data);
     }
 
-    async update_leaderboard(sniper_data) {
+    async update_leaderboard(sniper_id, sniper_data) {
         let leaderboard_data = await this.get_leaderboard();
         const original_leaderboard = JSON.parse(JSON.stringify(leaderboard_data));
-        const sniper_user = sniper_data["username"];
         const sniper_total_pts = sniper_data["pts"];
-        
-        leaderboard_data = leaderboard_data.filter(entry => entry["user"] !== sniper_user);
-        leaderboard_data.push({"user": sniper_user, "total_pts": sniper_total_pts})
+
+        leaderboard_data = leaderboard_data.filter(entry => entry["user_id"] !== sniper_id);
+
+        leaderboard_data.push({"user_id": sniper_id, "total_pts": sniper_total_pts})
         leaderboard_data.sort((a, b) => b.total_pts - a.total_pts);
         leaderboard_data = leaderboard_data.slice(0, 10);
-        
-        console.log(leaderboard_data)
 
         const changed = JSON.stringify(leaderboard_data) !== JSON.stringify(original_leaderboard);
         if (changed){
@@ -40,7 +38,15 @@ export class LeaderBoardManager{
     }
 
     async leaderboard_msg() {
+        let emoji_map = {1: "🥇", 2: "🥈", 3: "🥉"};
+
         let leaderboard_data = await this.get_leaderboard();
-        return JSON.stringify(leaderboard_data);
+        let response = "## Leaderboard :star2:\n";
+        let count = 1;
+        leaderboard_data.forEach(entry => {
+            response += `${count < 4 ? emoji_map[count] : count}. <@${entry["user_id"]}>  **${entry["total_pts"]} pts**\n`;
+            count++;
+        });
+        return response;
     }
 }
