@@ -1,3 +1,6 @@
+import { JsonResponse } from "../server";
+import { InteractionResponseFlags, InteractionResponseType } from 'discord-interactions';
+
 export class LeaderBoardManager{
     constructor(env) {
         this.env = env;
@@ -38,15 +41,48 @@ export class LeaderBoardManager{
     }
 
     async leaderboard_msg() {
-        let emoji_map = {1: "🥇", 2: "🥈", 3: "🥉"};
-
         let leaderboard_data = await this.get_leaderboard();
-        let response = "## Leaderboard :star2:\n";
-        let count = 1;
-        leaderboard_data.forEach(entry => {
-            response += `${count < 4 ? emoji_map[count] : count}. <@${entry["user_id"]}>  **${entry["total_pts"]} pts**\n`;
-            count++;
+        
+
+        let temp = this.leaderboard_msg_format(leaderboard_data);
+
+        const embed = {
+            title: "🏆 Leaderboard",
+            description: "Top 10 snipers this season!",
+            fields: [
+                {
+                    name: "",
+                    value: temp,
+                },
+            ],
+            color: 0xffd700, // Gold color
+        };
+
+        return new JsonResponse({
+            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: {
+                embeds: [embed],
+                flags: InteractionResponseFlags.EPHEMERAL
+
+            }
         });
         return response;
+    }
+
+
+    leaderboard_msg_format(leaderboard_data) {
+
+    
+        let emoji_map = {1: "🥇", 2: "🥈", 3: "🥉"};
+        let response = "";
+        let count = 1;
+        console.log(leaderboard_data);
+        leaderboard_data.forEach(entry => {
+            response += `**${count < 4 ? emoji_map[count] : count}<@${entry["user_id"]}>  ${entry["total_pts"]} pts**\n`;
+            count++;
+        });
+
+        return response;
+        
     }
 }

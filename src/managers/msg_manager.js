@@ -7,6 +7,7 @@ export class MsgManager {
 
     get_target_msg(targets) {
         const target_mentions = Array.from(targets.keys()).map(user => `<@${user}>`);
+        console.log(target_mentions);
         if (target_mentions.length == 1){
             return `:gun: Sniped ${target_mentions[0]}!`;
         }
@@ -18,6 +19,7 @@ export class MsgManager {
 
     format_user_mentions(target_mentions) {
         let ret_msg = '';
+        
 
         for (let i = 0; i < target_mentions.length - 1; i++){
             ret_msg += `${target_mentions[i]} `;
