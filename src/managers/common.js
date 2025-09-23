@@ -40,3 +40,19 @@ export async function get_json_response(content, ephemeral = false) {
         },
     });
 }
+
+export async function get_user_data_id(user_id, env) { // this will always return a json object
+    const user_data = await env.SNIPE_DATA.get(user_id);
+    if (!user_data) {
+        console.log("No user data found for ID, returning default values");
+        return {
+            out: 0,
+            in: 0,
+            pts: 0,
+            username: user?.username || 'Unknown User',
+            opted_in: true
+        };
+    }
+
+    return JSON.parse(user_data);
+}

@@ -1,4 +1,7 @@
 const ADMINISTRATOR = 0x00000008;
+const USER_TYPE = 6;
+const STRING_TYPE = 3;
+const INTEGER_TYPE = 4;
 
 export const SNIPE_COMMAND = {
     name: 'snipe',
@@ -7,31 +10,31 @@ export const SNIPE_COMMAND = {
         {
             name: 'target1',
             description: 'The target to snipe.',
-            type: 6, // USER type
+            type: USER_TYPE, // USER type
             required: true,
         },
         {
             name: 'target2',
             description: 'The target to snipe.',
-            type: 6, // USER type
+            type: USER_TYPE, // USER type
             required: false,
         },
         {
             name: 'target3',
             description: 'The target to snipe.',
-            type: 6, // USER type
+            type: USER_TYPE, // USER type
             required: false,
         },
         {
             name: 'target4',
             description: 'The target to snipe.',
-            type: 6, // USER type
+            type: USER_TYPE, // USER type
             required: false,
         },
         {
             name: 'target5',
             description: 'The target to snipe.',
-            type: 6, // USER type
+            type: USER_TYPE, // USER type
             required: false,
         }
     ],
@@ -44,7 +47,7 @@ export const STATS_COMMAND = {
         {
             name: 'user',
             description: 'The user to view stats for.',
-            type: 6, // USER type
+            type: USER_TYPE, // USER type
             required: false,
         }
     ],
@@ -75,7 +78,7 @@ export const OPT_COMMAND = {
         {
             name: 'mode',
             description: '"in" or "out"',
-            type: 3, // STRING type
+            type: STRING_TYPE, // STRING type
             required: true,
             choices: [
                 { name: 'in', value: 'in' },
@@ -85,7 +88,53 @@ export const OPT_COMMAND = {
         {
             name: 'user',
             description: 'The user to opt in/out.',
-            type: 6, // USER type
+            type: USER_TYPE, // USER type
+            required: true,
+        }
+    ],
+    default_member_permissions: ADMINISTRATOR.toString(), // Restrict to admins/mods
+};
+
+export const ERASE_SNIPE = {
+    name: 'erase-snipe',
+    description: 'Removes points from user and undoes in/out count changes',
+    options: [
+        {
+            name: 'sniper',
+            description: 'person who did snipe',
+            type: USER_TYPE,
+            required: true,
+        },
+        {
+            name: 'target',
+            description: 'person who got sniped',
+            type: USER_TYPE,
+            required: true,
+        },
+        {
+            name: 'points',
+            description: 'amount of points earned in snipe',
+            type: INTEGER_TYPE,
+            required: true,
+        }
+    ],
+    default_member_permissions: ADMINISTRATOR.toString(), // Restrict to admins/mods
+};
+
+export const ADD_POINTS = {
+    name: 'add-points',
+    description: 'Add points to a user.',
+    options: [
+        {
+            name: 'user',
+            description: 'The user to add points to.',
+            type: USER_TYPE, // USER type
+            required: true,
+        },
+        {
+            name: 'points',
+            description: 'The number of points to add.',
+            type: INTEGER_TYPE, // INTEGER type
             required: true,
         }
     ],

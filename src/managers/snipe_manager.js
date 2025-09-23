@@ -54,6 +54,16 @@ export class SnipeManager {
         sniper_data["out"] += 1;
     }
 
+    async decrement_out(sniper_data) {
+        if (!sniper_data) {
+            console.error("Sniper data is undefined");
+            return;
+        }
+        sniper_data["out"] -= 1;
+        if (sniper_data["out"] < 0) {
+            sniper_data["out"] = 0;
+        }
+    }
 
     async increment_in(target_data) {
         if (!target_data) {
@@ -64,6 +74,16 @@ export class SnipeManager {
 
     }
 
+    async decrement_in(target_data) {
+        if (!target_data) {
+            console.error("Target data is undefined");
+            return;
+        }  
+        target_data["in"] -= 1;
+        if (target_data["in"] < 0) {
+            target_data["in"] = 0;
+        }
+    }
 
     async get_user_data(user) { // this will always return a json object
         

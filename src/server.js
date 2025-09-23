@@ -14,6 +14,9 @@ import { handleStats } from './handlers/stats.js';
 import { handleLeaderBoard } from './handlers/leaderboard.js';
 import { handleOptOut } from './handlers/optout.js';
 import { handleOpt } from './handlers/opt.js';
+import { handleEraseSnipe } from './handlers/erasesnipe.js';
+import { handleAddPoints } from './handlers/addpoints.js';
+
 
 const handlers = {
     SNIPE: handleSnipe,
@@ -22,6 +25,8 @@ const handlers = {
     LEADERBOARD: handleLeaderBoard,
     OPTOUT: handleOptOut,
     OPT: handleOpt,
+    "ERASE-SNIPE": handleEraseSnipe,
+    "ADD-POINTS": handleAddPoints,
 };
 
 export class JsonResponse extends Response {
