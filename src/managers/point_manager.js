@@ -1,7 +1,7 @@
 export class PointManager {
     get_combo_bonus(targets) {
         let vals = {1: 1, 2: 1.3, 3:1.4, 4: 1.45, 5: 1.5}
-        return vals[Object.keys(targets).length] || 1;
+        return vals[targets.size] || 1;
     }
 
 
