@@ -22,7 +22,7 @@ export async function handleEraseSnipe(interaction, env) {
 
     await snipeManager.save_user_data(sniperUser, sniper_data);
     await snipeManager.save_user_data(targetUser, target_data);
-    await snipeManager.leaderBoardManager.update_leaderboard(sniperUser.id, sniper_data);
+    await snipeManager.leaderBoardManager.update_leaderboard(sniperUser, sniper_data);
 
     const response = `Erased snipe by <@${sniperUser}> on <@${targetUser}> : -${points} points`;
     return utils.get_json_response(response, false);
